@@ -1,0 +1,53 @@
+list_image_files('C:/Users/ZhangW16/Downloads/test', 'default', [], ImageFiles)
+for i := 0 to |ImageFiles|-1 by 1 
+     read_image(Image1, ImageFiles[i])
+     get_image_pointer1_rect(Image1, PixelPointer, Width, Height, VerticalPitch, HorizontalBitPitch, BitsPerPixel)
+     scale_image (Image1, Image, 5, 10)
+     threshold (Image, Regions, 24000, 30000)
+     closing_circle(Regions, RegionClosing, 35)
+     connection(RegionClosing, ConnectedRegions2)
+     select_shape(ConnectedRegions2, SelectedRegions, 'area', 'and', 1000000, 100000000)
+     difference(Image, SelectedRegions, RegionDifference)
+     connection(RegionDifference, ConnectedRegions1)
+     select_shape(ConnectedRegions1, SelectedRegions1, 'area', 'and', 40000000, 60000000)
+     reduce_domain(Image,SelectedRegions1,Mask)
+     crop_domain(Mask, ImagePart1)
+     crop_part(ImagePart1, ImagePart, 2000, 2000, 2000, 6000)
+     mean_image(ImagePart, ImageMean, 5, 5)
+     median_image(ImagePart, ImageMedian1, 'square', 5, 'mirrored')
+     dyn_threshold(ImageMean, ImageMedian1, RegionDynThresh1, 10000, 'light')
+     *dyn_threshold(ImagePart, ImageMean, RegionDynThresh, 12000, 'light')
+     *connection(RegionDynThresh, ConnectedRegions)
+     connection(RegionDynThresh1, ConnectedRegions1)
+     count_obj(ConnectedRegions1, Number)
+     open_file ('C:/Users/ZhangW16/Downloads/SE.xls', 'output', FileHandle)
+     fwrite_string (FileHandle, 'Data')
+     fnew_line (FileHandle)
+     for i:=1 to Number by 1
+        select_obj(ConnectedRegions1, ObjectSelected, i)
+        *area_center( ObjectSelected, Area, Row, Column)
+        smallest_circle(ObjectSelected, Row, Column, Radius)
+        *fwrite_string (FileHandle, i+' '+Radius)
+        fwrite_string (FileHandle, Radius)
+        fnew_line (FileHandle)
+        *fwrite_string (FileHandle, i+' '+Row)
+        fwrite_string (FileHandle, Row)
+        fnew_line (FileHandle)
+        *fwrite_string (FileHandle, i+' '+Column)
+        fwrite_string (FileHandle, Column)
+        fnew_line (FileHandle)
+     endfor
+     close_file (FileHandle)
+     get_system_time (MSecond, Second, Minute, Hour, Day, YDay, Month, Year)
+     Dirs:='C:/Users/ZhangW16/Downloads/TEM/'
+     Path:=Dirs+Month$'d'+'-'+Day$'d'+'/'
+     Filename:=Dirs+Hour$'d'+'h'+Minute$'d'+'m'+Second$'d'+'s'+'.tif'
+     write_image (Image1, 'tiff', 0, Filename)  
+endfor
+                           
+list_image_files('C:/Users/ZhangW16/Downloads/test', 'default', [], ImageFiles)
+for i := 0 to |ImageFiles|-1 by 1 
+    delete_file(ImageFiles[i])
+endfor
+*calculate_features(ConnectedRegions, ImageMedian, 'area', Features)
+*area_center_gray(ConnectedRegions, ImageMedian, Area, Row, Column)
