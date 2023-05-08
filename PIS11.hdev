@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="21.05.0.0">
+<procedure name="main">
+<interface/>
+<body>
+<c></c>
+<l>dev_update_off ()</l>
+<l>dev_set_draw ('margin')</l>
+<l>for i:=1 to 2 by 1</l>
+<c></c>
+<l>    read_image (FrameGroup1, 'C:/Users/zhangw16/Pictures/3.bmp')</l>
+<l>*    decompose3(FrameGroup1, FrameGroup, Image2, Image3)</l>
+<l>*    read_image (Odd, 'D:/Recipe/GM Wave2/2023_2_17 14_58_53_odd_out.bmp')</l>
+<l>*    append_channel (Odd, Even, FrameGroup)</l>
+<c>    </c>
+<l>    GeneralParamList:=['SaveInterimResults',0,\
+                       'InterimResultsPath','',\
+                       'ForegroundThresholdMin',0,\
+                       'ForegroundThresholdMax',255,\
+                       'GlassQualityRegion',35,\
+                       'backgroundRemovalHorizontalStripeCount',32,\
+                       'backgroundRemovalVerticalStripeCount',64,\
+                       'NormalizedImageMean',128,\
+                       'EdgeDetectionChannel',1,\
+                       'EdgeExclusionWidthPix',50,\
+                       'EdgeExclusionHeightPix',50,\
+                       'DefectCropMargin',20,\
+                       'WindowAreaThresholdMin', 140,\
+                       'WindowAreaThresholdMax', 220,\
+                       'InkAreaThresholdMin', 38,\
+                       'InkAreaThresholdMax', 60,\
+                       'WindowAreaMin',50000,\
+                       'WindowAreaMax',99999999,\
+                       'CanvasWidth',1300,\
+                       'CanvasLength', 2600,\
+                       'ProductWidth', 120,\
+                       'ProductLength', 620,\
+                       'CropSavePath', 'C:/Users/zhangw16/Pictures/WI/']</l>
+<l>    Ch1ProcessingParamList:= ['Ch1SmallKernelSize',3,\
+                       'Ch1BigKernelSize',50,\
+                       'Ch1LightDifferenceValue',20,\
+                       'Ch1LightMinArea',5,\
+                       'Ch1DarkDifferenceValue',25,\
+                       'Ch1DarkMinArea',15,\
+                       'Ch1VerScaleFactor',8,\
+                       'Ch1VerScaleThreshDark',110,\
+                       'Ch1VerScaleThreshLight',140,\
+                       'Ch1VerScaleThreshMinArea',10,\
+                       'Ch1HorScaleFactor', 8,\
+                       'Ch1ScaleThreshLight',140,\
+                       'Ch1ScaleThreshDark',120,\
+                       'Ch1ScaleThreshMinArea',5,\
+                       'Ch1DefectUnionDistance',5,\
+                       'Ch1MinDefectIntensity',35]</l>
+<l>    Ch2ProcessingParamList:= ['Ch2SmallKernelSize',3,\
+                       'Ch2BigKernelSize',50,\
+                       'Ch2LightDifferenceValueIA',150,\
+                       'Ch2LightMinAreaIA',100,\
+                       'Ch2LightDifferenceValueWA',220,\
+                       'Ch2LightMinAreaWA',680,\
+                       'Ch2LightDifferenceValue',150,\
+                       'Ch2LightMinArea',50,\
+                       'Ch2DarkDifferenceValue',90,\
+                       'Ch2DarkMinArea',50,\
+                       'Ch2VerScaleFactor',8,\
+                       'Ch2VerScaleThreshDark',110,\
+                       'Ch2VerScaleThreshLight',140,\
+                       'Ch2VerScaleThreshMinArea',10,\
+                       'Ch2HorScaleFactor', 8,\
+                       'Ch2ScaleThreshLight',140,\
+                       'Ch2ScaleThreshDark',120,\
+                       'Ch2ScaleThreshMinArea',5,\
+                       'Ch2DefectUnionDistance',5,\
+                       'Ch2MinDefectIntensity',20]</l>
+<c>    </c>
+<c>    </c>
+<l>    ControlParamList:=[GeneralParamList, Ch1ProcessingParamList, Ch2ProcessingParamList]</l>
+<c>    </c>
+<c>    </c>
+<l>    PieceID := '2022112411'</l>
+<c>    </c>
+<l>    frame_group_processing (FrameGroup1, Ch2DefectCrop, ControlParamList, PieceID, DefectNumber, DefectCropPath, Ch1DefectColumnArray, Ch1DefectRowArray, Ch1DefectLengthArray, Ch1DefectWidthArray, Ch1DefectAngleArray, Ch1DefectRowArrayCanvas, Ch1DefectColumnArrayCanvas, GlassEdgeRowArray, GlassEdgeColumnArray, GlassEdgeRowArrayEnd, GlassEdgeColumnArrayEnd)</l>
+<c></c>
+<c></c>
+<c></c>
+<l>endfor</l>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+<procedure name="param_dictionary">
+<interface>
+<ic>
+<par name="ControlParamList" base_type="ctrl" dimension="0"/>
+<par name="ParamName" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="ParamValue" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<c></c>
+<l>tuple_is_string (ParamName, ParamNameIsString)</l>
+<c></c>
+<l>if(ParamNameIsString==false)</l>
+<l>    throw([Exception, 'ParamName is not a string'])</l>
+<l>    return()</l>
+<l>endif</l>
+<c></c>
+<l>try</l>
+<l>    tuple_find (ControlParamList, ParamName, Indices)</l>
+<c>    </c>
+<l>    if(|Indices|&gt;1)</l>
+<l>        throw([Exception, 'More than one parameter ' + ParamName + 'in the ControlParamList' ])</l>
+<l>        return()</l>
+<l>    endif</l>
+<l>    ParamValue:=ControlParamList[Indices+1]</l>
+<l>catch (Exception)</l>
+<l>    throw('ParamName does not exist in ControlParamList')</l>
+<l>endtry</l>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="param_dictionary">
+<parameters>
+<parameter id="ControlParamList"/>
+<parameter id="ParamName"/>
+<parameter id="ParamValue"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="frame_group_processing">
+<interface>
+<io>
+<par name="FrameGroup1" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="Ch2DefectCrop" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="ControlParamList" base_type="ctrl" dimension="0"/>
+<par name="PieceID" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="DefectID" base_type="ctrl" dimension="0"/>
+<par name="DefectCropPath" base_type="ctrl" dimension="0"/>
+<par name="DefectColumnArray" base_type="ctrl" dimension="0"/>
+<par name="DefectRowArray" base_type="ctrl" dimension="0"/>
+<par name="DefectLengthArray" base_type="ctrl" dimension="0"/>
+<par name="DefectWidthArray" base_type="ctrl" dimension="0"/>
+<par name="DefectAngleArray" base_type="ctrl" dimension="0"/>
+<par name="DefectRowArrayCanvas" base_type="ctrl" dimension="0"/>
+<par name="DefectColumnArrayCanvas" base_type="ctrl" dimension="0"/>
+<par name="GlassEdgeRowArrayStart" base_type="ctrl" dimension="0"/>
+<par name="GlassEdgeColumnArrayStart" base_type="ctrl" dimension="0"/>
+<par name="GlassEdgeRowArrayEnd" base_type="ctrl" dimension="0"/>
+<par name="GlassEdgeColumnArrayEnd" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c>** channel 1 is bright, channel 2 is dark channel</c>
+<l>*decompose3 (FrameGroup1, FrameGroup1, Image2, Image3)</l>
+<c>**glass region detection</c>
+<l>glass_detection (FrameGroup1, GlassRegion, GlassQualityAreaRigion, ControlParamList)</l>
+<c></c>
+<c>**general canvas 4 pints</c>
+<l>gen_canvas_points (GlassRegion, CanvasRow, CanvasColumn, CanvasWidth, CanvasLength)</l>
+<l>calculate_transfor_matrix (ControlParamList, CanvasRow, CanvasColumn, HomMat2D1)</l>
+<l>*gen_cross_contour_xld (Cross, CanvasRow, CanvasColumn, 60, 0.785398)</l>
+<c></c>
+<c>**background remove</c>
+<l>* background_removal (FrameGroup1, GlassRegion, GlassQualityAreaRigion, DarkFieldBGRemoved, ControlParamList)</l>
+<c></c>
+<c>**window area and ink area detection</c>
+<l>windows_ink_area_detection (GlassRegion, GlassInkArea, GlassWindowArea, ControlParamList)</l>
+<c></c>
+<c>**defect detection in ink area</c>
+<l>defect_process_ink (GlassRegion,GlassInkArea, DefectConnectedRegionsIA, ControlParamList)</l>
+<c></c>
+<c>**defect detection in window area</c>
+<l>defect_process_window (GlassRegion, GlassWindowArea,DefectConnectedRegionsWA, ControlParamList)</l>
+<c></c>
+<c>**general detection, in case no IA/ WA is detected</c>
+<l>*darkfiled_defect_process_general_area (DarkFieldBGRemoved, GlassInkArea, ImageReduced, Region, DefectConnectedRegions, ControlParamList, Ch2SmallKernelSize, Ch2BigKernelSize, Ch2LightDifferenceValueIA, Ch2LightMinAreaIA, color)</l>
+<c></c>
+<c>**defect union: IA + WA + GENERAL</c>
+<l>defect_union (DefectConnectedRegionsIA, DefectConnectedRegionsWA, DefectConnectedRegions)</l>
+<c></c>
+<c>**generate defect report</c>
+<l>access_channel (GlassRegion, RawImageCh2, 1)</l>
+<l>defect_report (RawImageCh2, DefectConnectedRegions, DefectImgCropList, ControlParamList, DefectColumnArray, \
+               DefectRowArray, DefectLengthArray, DefectWidthArray, DefectAngleArray)</l>
+<c></c>
+<c>** transfor coordinate to canvas coordinate</c>
+<l>affine_trans_point_2d (HomMat2D1, CanvasRow, CanvasColumn, CanvasRowCanvas, CanvasColumnCanvas)</l>
+<l>affine_trans_point_2d (HomMat2D1, DefectRowArray, DefectColumnArray, DefectRowArrayCanvas, DefectColumnArrayCanvas)</l>
+<c></c>
+<c>**save defect raw crops</c>
+<l>defect_crop_save (DefectImgCropList, ControlParamList, PieceID, DefectID, DefectCropPath)</l>
+<c></c>
+<c>*获取玻璃编号</c>
+<l>param_dictionary(ControlParamList, 'PieceID', PieceID)</l>
+<c></c>
+<c>**generate_glass_edge_pointset</c>
+<l>generate_glass_edge_pointset (GlassRegion, GlassEdgeRowStart, GlassEdgeColumnStart, GlassEdgeRowEnd, GlassEdgeColumnEnd)</l>
+<l>affine_trans_point_2d (HomMat2D1, GlassEdgeRowStart, GlassEdgeColumnStart, GlassEdgeRowArrayStart, GlassEdgeColumnArrayStart)</l>
+<l>affine_trans_point_2d (HomMat2D1, GlassEdgeRowEnd, GlassEdgeColumnEnd, GlassEdgeRowArrayEnd, GlassEdgeColumnArrayEnd)</l>
+<c></c>
+<l>param_dictionary(ControlParamList, 'CanvasWidth', CanvasWidth)</l>
+<l>param_dictionary(ControlParamList, 'CanvasLength', CanvasLength)</l>
+<l>dev_clear_window ()</l>
+<l>dev_close_window ()</l>
+<l>dev_open_window (0, 0, CanvasWidth + 10, CanvasLength + 10, 'black', WindowHandle)</l>
+<l>gen_region_line (RegionLines, GlassEdgeRowArrayStart, GlassEdgeColumnArrayStart, GlassEdgeRowArrayEnd, GlassEdgeColumnArrayEnd)</l>
+<c></c>
+<l>gen_cross_contour_xld (Cross, DefectRowArrayCanvas, DefectColumnArrayCanvas, 40, 1)</l>
+<c></c>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="frame_group_processing">
+<parameters>
+<parameter id="Ch2DefectCrop"/>
+<parameter id="ControlParamList"/>
+<parameter id="DefectAngleArray"/>
+<parameter id="DefectColumnArray"/>
+<parameter id="DefectColumnArrayCanvas"/>
+<parameter id="DefectCropPath"/>
+<parameter id="DefectID"/>
+<parameter id="DefectLengthArray"/>
+<parameter id="DefectRowArray"/>
+<parameter id="DefectRowArrayCanvas"/>
+<parameter id="DefectWidthArray"/>
+<parameter id="FrameGroup1"/>
+<parameter id="GlassEdgeColumnArrayEnd"/>
+<parameter id="GlassEdgeColumnArrayStart"/>
+<parameter id="GlassEdgeRowArrayEnd"/>
+<parameter id="GlassEdgeRowArrayStart"/>
+<parameter id="PieceID"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="glass_detection">
+<interface>
+<io>
+<par name="FrameGroup" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="GlassRegion" base_type="iconic" dimension="0"/>
+<par name="GlassQualityAreaRegion" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="ControlParamList" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c></c>
+<c>**channel 1 is for bright field, channel 2 is for dark field</c>
+<l>access_channel (FrameGroup, BrightField, 1)</l>
+<l>*access_channel (FrameGroup, DarkField, 2)</l>
+<c></c>
+<l>param_dictionary(ControlParamList, 'ForegroundThresholdMin', ForegroundThresholdMin)</l>
+<l>param_dictionary(ControlParamList, 'ForegroundThresholdMax', ForegroundThresholdMax)</l>
+<c></c>
+<l>threshold (FrameGroup, Regions1, 38, 60)</l>
+<l>connection(Regions1, ConnectedRegions1)</l>
+<l>fill_up(ConnectedRegions1, RegionFillUp1)</l>
+<l>connection(RegionFillUp1, ConnectedRegions2)</l>
+<l>select_shape_std(ConnectedRegions2, SelectedRegions1, 'max_area', 7000)</l>
+<c></c>
+<l>threshold (FrameGroup, Regions2, 140, 227)</l>
+<l>connection(Regions2, ConnectedRegions3)</l>
+<l>fill_up(ConnectedRegions3, RegionFillUp2)</l>
+<l>connection(RegionFillUp2, ConnectedRegions4)</l>
+<l>select_shape_std(ConnectedRegions4, SelectedRegions2, 'max_area', 7000)</l>
+<l>union2(SelectedRegions1, SelectedRegions2, RegionUnion)</l>
+<l>reduce_domain(BrightField, RegionUnion, GlassRegion)</l>
+<c></c>
+<c></c>
+<c></c>
+<l>*threshold (ImageReduced, Region, ForegroundThresholdMin, ForegroundThresholdMax)</l>
+<l>*threshold (DarkField, Region, ForegroundThresholdMin, ForegroundThresholdMax)</l>
+<l>*connection (Region, ConnectedRegions)</l>
+<l>*fill_up (ConnectedRegions, RegionFillUp)</l>
+<l>*connection (RegionFillUp, ConnectedRegions2)</l>
+<l>*select_shape_std (ConnectedRegions2, GlassRegion, 'max_area', 7000)</l>
+<c></c>
+<l>*complement (GlassRegion, BackgroundRegion)</l>
+<l>param_dictionary(ControlParamList, 'GlassQualityRegion', GlassQualityRegion)</l>
+<l>*dilation_rectangle1 (BackgroundRegion, BackgroundRegion, GlassQualityRegion, GlassQualityRegion)</l>
+<l>*complement (BackgroundRegion, GlassQualityAreaRegion)</l>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="glass_detection">
+<parameters>
+<parameter id="ControlParamList"/>
+<parameter id="FrameGroup"/>
+<parameter id="GlassQualityAreaRegion"/>
+<parameter id="GlassRegion"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="background_removal">
+<interface>
+<io>
+<par name="FrameGroup" base_type="iconic" dimension="0"/>
+<par name="GlassRegion" base_type="iconic" dimension="0"/>
+<par name="GlassQualityAreaRigion" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="DarkFieldBGRemoved" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="ControlParamList" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c></c>
+<l>access_channel (FrameGroup, DarkField, 2)</l>
+<l>reduce_domain (DarkField, GlassQualityAreaRigion, DarkFieldBGRemoved)</l>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="background_removal">
+<parameters>
+<parameter id="ControlParamList"/>
+<parameter id="DarkFieldBGRemoved"/>
+<parameter id="FrameGroup"/>
+<parameter id="GlassQualityAreaRigion"/>
+<parameter id="GlassRegion"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="windows_ink_area_detection">
+<interface>
+<io>
+<par name="Framegroup" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="GlassInkArea" base_type="iconic" dimension="0"/>
+<par name="GlassWindowArea" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="ControlParamList" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c></c>
+<l>param_dictionary(ControlParamList, 'WindowAreaThresholdMin', WindowAreaThresholdMin)</l>
+<l>param_dictionary(ControlParamList, 'WindowAreaThresholdMax', WindowAreaThresholdMax)</l>
+<l>param_dictionary(ControlParamList, 'InkAreaThresholdMin', InkAreaThresholdMin)</l>
+<l>param_dictionary(ControlParamList, 'InkAreaThresholdMax', InkAreaThresholdMax)</l>
+<c></c>
+<l>threshold (Framegroup, GlassWindowArea, WindowAreaThresholdMin, WindowAreaThresholdMax)</l>
+<l>fill_up (GlassWindowArea, GlassWindowArea)</l>
+<l>connection (GlassWindowArea, GlassWindowArea)</l>
+<c></c>
+<l>param_dictionary(ControlParamList, 'WindowAreaMin', WindowAreaMin)</l>
+<l>param_dictionary(ControlParamList, 'WindowAreaMax', WindowAreaMax)</l>
+<l>select_shape (GlassWindowArea, GlassWindowArea, 'area', 'and', WindowAreaMin, WindowAreaMax)</l>
+<c></c>
+<c></c>
+<l>difference(Framegroup, GlassWindowArea, GlassInkArea)</l>
+<c></c>
+<c></c>
+<l>*complement (GlassWindowArea, GlassInkArea)</l>
+<c></c>
+<l>return ()</l>
+<c></c>
+</body>
+<docu id="windows_ink_area_detection">
+<parameters>
+<parameter id="ControlParamList"/>
+<parameter id="Framegroup"/>
+<parameter id="GlassInkArea"/>
+<parameter id="GlassWindowArea"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="defect_process_ink">
+<interface>
+<io>
+<par name="Framegroup" base_type="iconic" dimension="0"/>
+<par name="GlassInkArea" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="DefectConnectedRegions" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="ControlParamList" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c></c>
+<c></c>
+<l>param_dictionary(ControlParamList, 'Ch2SmallKernelSize', Ch2SmallKernelSize)</l>
+<l>param_dictionary(ControlParamList, 'Ch2BigKernelSize', Ch2BigKernelSize)</l>
+<c></c>
+<c>** 正常分辨率检测黑白瑕疵</c>
+<l>param_dictionary(ControlParamList, 'Ch2DarkDifferenceValue', Ch2LightDifferenceValueIA)</l>
+<l>param_dictionary(ControlParamList, 'Ch2DarkMinArea', Ch2LightMinAreaIA)</l>
+<l>color:='light'</l>
+<c></c>
+<l>reduce_domain (Framegroup, GlassInkArea, ImageReduced)</l>
+<l>threshold (ImageReduced, Region, Ch2LightDifferenceValueIA, 255)</l>
+<l>fill_up (Region, Region)</l>
+<l>connection (Region, Region)</l>
+<c></c>
+<l>select_shape (Region, DefectConnectedRegions, 'area', 'and', Ch2LightMinAreaIA, 99999999)</l>
+<c></c>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="defect_process_ink">
+<parameters>
+<parameter id="ControlParamList"/>
+<parameter id="DefectConnectedRegions"/>
+<parameter id="Framegroup"/>
+<parameter id="GlassInkArea"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="defect_process_window">
+<interface>
+<io>
+<par name="FrameGroup" base_type="iconic" dimension="0"/>
+<par name="GlassWindowArea" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="DefectConnectedRegions" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="ControlParamList" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<c></c>
+<c></c>
+<l>param_dictionary(ControlParamList, 'Ch2SmallKernelSize', Ch2SmallKernelSize)</l>
+<l>param_dictionary(ControlParamList, 'Ch2BigKernelSize', Ch2BigKernelSize)</l>
+<c></c>
+<c>** 正常分辨率检测黑白瑕疵</c>
+<l>param_dictionary(ControlParamList, 'Ch2LightDifferenceValueWA', Ch2LightDifferenceValueWA)</l>
+<l>param_dictionary(ControlParamList, 'Ch2LightMinAreaWA', Ch2LightMinAreaWA)</l>
+<l>color:='light'</l>
+<c></c>
+<l>reduce_domain (FrameGroup, GlassWindowArea, ImageReduced)</l>
+<l>threshold (ImageReduced, Region, Ch2LightDifferenceValueWA, 255)</l>
+<l>fill_up (Region, Region)</l>
+<l>connection (Region, Region)</l>
+<c></c>
+<l>select_shape (Region, DefectConnectedRegions, 'area', 'and', Ch2LightMinAreaWA, 99999999)</l>
+<c></c>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="defect_process_window">
+<parameters>
+<parameter id="ControlParamList"/>
+<parameter id="DefectConnectedRegions"/>
+<parameter id="FrameGroup"/>
+<parameter id="GlassWindowArea"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="defect_report">
+<interface>
+<io>
+<par name="SingleChannelImage" base_type="iconic" dimension="0"/>
+<par name="DefectRegions" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="DefectImgCropList" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="ControlParamList" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="DefectColumnArray" base_type="ctrl" dimension="0"/>
+<par name="DefectRowArray" base_type="ctrl" dimension="0"/>
+<par name="DefectLengthArray" base_type="ctrl" dimension="0"/>
+<par name="DefectWidthArray" base_type="ctrl" dimension="0"/>
+<par name="DefectAngleArray" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<c></c>
+<c></c>
+<c>*获取玻璃编号</c>
+<l>param_dictionary(ControlParamList, 'PieceID', PieceID)</l>
+<c></c>
+<l>get_image_size(SingleChannelImage, Width, Height)</l>
+<c></c>
+<c>*把缺陷的长宽、位置、角度都提取出来</c>
+<l>smallest_rectangle2 (DefectRegions, DefectRowArray, DefectColumnArray, DefectAngleArray, Length1, Length2)</l>
+<l>DefectLengthArray:=Length1*2</l>
+<l>DefectWidthArray:=Length2*2</l>
+<l>smallest_rectangle1(DefectRegions,Row1, Column1, Row2, Column2)</l>
+<c></c>
+<l>DefectSizeRow:=Row2-Row1</l>
+<l>DefectSizeColumn:=Column2-Column1</l>
+<c></c>
+<c>*把缺陷的小图片抠出来，图片周围留“DefectCropMargin”这么多像素的边</c>
+<l>param_dictionary(ControlParamList, 'DefectCropMargin', DefectCropMargin)</l>
+<c></c>
+<l>DefectCropSize:= max2(DefectSizeColumn, DefectSizeRow)+DefectCropMargin*2</l>
+<c></c>
+<l>CropRow1:=DefectRowArray-DefectCropSize/2</l>
+<l>CropRow2:=DefectRowArray+DefectCropSize/2</l>
+<l>CropColumn1:=DefectColumnArray-DefectCropSize/2</l>
+<l>CropColumn2:=DefectColumnArray+DefectCropSize/2</l>
+<c></c>
+<c></c>
+<c>*抠图的时候，如果太靠近图像边缘，就别抠到图片外边去了</c>
+<l>if (CropRow1=[])</l>
+<l>    gen_empty_obj (DefectImgCropList)</l>
+<l>    return ()</l>
+<l>endif</l>
+<l>crop_rectangle1(SingleChannelImage, DefectImgCropList,\
+               max2(CropRow1,0),max2(CropColumn1,0),\
+               min2(CropRow2,Height), min2(CropColumn2,Width))</l>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="defect_report">
+<parameters>
+<parameter id="ControlParamList"/>
+<parameter id="DefectAngleArray"/>
+<parameter id="DefectColumnArray"/>
+<parameter id="DefectImgCropList"/>
+<parameter id="DefectLengthArray"/>
+<parameter id="DefectRegions"/>
+<parameter id="DefectRowArray"/>
+<parameter id="DefectWidthArray"/>
+<parameter id="SingleChannelImage"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="gen_canvas_points">
+<interface>
+<io>
+<par name="GlassRegion" base_type="iconic" dimension="0"/>
+</io>
+<oc>
+<par name="CanvasRow" base_type="ctrl" dimension="0"/>
+<par name="CanvasColumn" base_type="ctrl" dimension="0"/>
+<par name="CanvasWidth" base_type="ctrl" dimension="0"/>
+<par name="CanvasLength" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<c></c>
+<c></c>
+<l>smallest_rectangle2 (GlassRegion, Row, Column16, Phi3, Length1, Length2)</l>
+<c>    </c>
+<c>*提取仿射最小外接矩形的四个顶点坐标</c>
+<l>gen_rectangle2_contour_xld (Rectangle4, Row, Column16, Phi3, Length1, Length2)</l>
+<l>phd:=abs(Phi3)</l>
+<l>tuple_cos (phd, Cos)</l>
+<l>tuple_sin (phd, Sin)</l>
+<l>dev_set_color('red')</l>
+<c></c>
+<l>a:= -Length1*Cos - Length2*Sin</l>
+<l>b := -Length1*Sin + Length2*Cos</l>
+<l>gen_cross_contour_xld (Cross1, Row-b, Column16+a, 60, Phi3)</l>
+<l>c := Length1*Cos - Length2*Sin</l>
+<l>d := Length1*Sin + Length2*Cos</l>
+<l>gen_cross_contour_xld (Cross2, Row-d, Column16+c, 60, Phi3)</l>
+<l>e:= Length1*Cos + Length2*Sin</l>
+<l>f := Length1*Sin - Length2*Cos</l>
+<l>gen_cross_contour_xld (Cross3, Row-f, Column16+e, 60, Phi3)</l>
+<l>g := -Length1*Cos + Length2*Sin</l>
+<l>h := -Length1*Sin - Length2*Cos</l>
+<l>gen_cross_contour_xld (Cross4, Row-h, Column16+g, 60, Phi3)</l>
+<c></c>
+<l>CanvasRow := [Row-b, Row-d, Row-f, Row-h]</l>
+<l>CanvasColumn := [Column16+a, Column16+c, Column16+e, Column16+g]</l>
+<l>CanvasWidth := Length2</l>
+<l>CanvasLength := Length1</l>
+<l>return ()</l>
+</body>
+<docu id="gen_canvas_points">
+<parameters>
+<parameter id="CanvasColumn"/>
+<parameter id="CanvasLength"/>
+<parameter id="CanvasRow"/>
+<parameter id="CanvasWidth"/>
+<parameter id="GlassRegion"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="save_defect_crops">
+<interface>
+<io>
+<par name="DefectImgCropList" base_type="iconic" dimension="0"/>
+</io>
+<ic>
+<par name="path" base_type="ctrl" dimension="0"/>
+</ic>
+</interface>
+<body>
+<l>get_system_time (MSecond, Second, Minute, Hour, Day, YDay, Month, Year)</l>
+<c></c>
+<l>file_exists (path, FileExists)</l>
+<l>if (FileExists=0)</l>
+<l>    make_dir (path)</l>
+<l>endif</l>
+<c></c>
+<l>for index := 1 to 10 by 1</l>
+<l>    select_obj (DefectImgCropList, ObjectSelected, index)</l>
+<l>    name:=path + index + '.bmp'</l>
+<l>    write_image (ObjectSelected, 'bmp', 0, name)</l>
+<l>endfor</l>
+<l>return ()</l>
+</body>
+<docu id="save_defect_crops">
+<parameters>
+<parameter id="DefectImgCropList"/>
+<parameter id="path"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="defect_crop_save">
+<interface>
+<io>
+<par name="DefectImgCropList" base_type="iconic" dimension="0"/>
+</io>
+<ic>
+<par name="ControlParamList" base_type="ctrl" dimension="0"/>
+<par name="PieceID" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="DefectID" base_type="ctrl" dimension="0"/>
+<par name="DefectCropPath" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<c></c>
+<c></c>
+<c></c>
+<c>*获取小图存储路径</c>
+<l>param_dictionary(ControlParamList, 'CropSavePath', CropSavePath)</l>
+<c></c>
+<c></c>
+<l>raw_image_save_path := CropSavePath + PieceID + '/'</l>
+<c></c>
+<l>crop_save_path := raw_image_save_path + 'crop/'</l>
+<c></c>
+<l>file_exists (raw_image_save_path, FileExists)</l>
+<l>if (FileExists=0)</l>
+<l>    make_dir (raw_image_save_path)</l>
+<l>endif</l>
+<c></c>
+<l>file_exists (crop_save_path, FileExists2)</l>
+<l>if (FileExists2=0)</l>
+<l>    make_dir (crop_save_path)</l>
+<l>endif</l>
+<c></c>
+<l>count_obj (DefectImgCropList, Number)</l>
+<l>zoom_image_size (DefectImgCropList, Ch1DefectCrop, 50, 50, 'weighted')</l>
+<c></c>
+<l>DefectID := []</l>
+<l>DefectCropPath := []</l>
+<c></c>
+<l>for index := 1 to Number by 1</l>
+<c>    </c>
+<l>    DefectID[index-1] := PieceID + '_' + index</l>
+<l>    DefectCropPath[index-1] := crop_save_path + DefectID[index-1] + '.bmp'</l>
+<l>    select_obj (DefectImgCropList, ObjectSelected, index)</l>
+<l>    write_image (ObjectSelected, 'bmp', 0, DefectCropPath[index-1])</l>
+<l>endfor</l>
+<l>return ()</l>
+</body>
+<docu id="defect_crop_save">
+<parameters>
+<parameter id="ControlParamList"/>
+<parameter id="DefectCropPath"/>
+<parameter id="DefectID"/>
+<parameter id="DefectImgCropList"/>
+<parameter id="PieceID"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="calculate_transfor_matrix">
+<interface>
+<ic>
+<par name="ControlParamList" base_type="ctrl" dimension="0"/>
+<par name="CanvasRow" base_type="ctrl" dimension="0"/>
+<par name="CanvasColumn" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="HomMat2D1" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>param_dictionary(ControlParamList, 'ProductWidth', ProductWidth)</l>
+<l>param_dictionary(ControlParamList, 'ProductLength', ProductLength)</l>
+<l>RowT := [5, 5, ProductWidth, ProductWidth]</l>
+<l>ColumnT := [5, ProductLength, ProductLength, 5]</l>
+<l>hom_mat2d_identity (HomMat2D1)</l>
+<l>vector_to_hom_mat2d (CanvasRow, CanvasColumn, RowT, ColumnT, HomMat2D1)</l>
+<l>affine_trans_point_2d (HomMat2D1, CanvasRow, CanvasColumn, Qx, Qy)</l>
+<l>return ()</l>
+</body>
+<docu id="calculate_transfor_matrix">
+<parameters>
+<parameter id="CanvasColumn"/>
+<parameter id="CanvasRow"/>
+<parameter id="ControlParamList"/>
+<parameter id="HomMat2D1"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="glass_edge_detection">
+<interface>
+<io>
+<par name="GlassRegion" base_type="iconic" dimension="0"/>
+</io>
+<oc>
+<par name="GlassEdgeRowArray" base_type="ctrl" dimension="0"/>
+<par name="GlassEdgeColumnArray" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>gen_contour_region_xld (GlassRegion, Contours, 'border')</l>
+<l>smooth_contours_xld (Contours, SmoothedContours, 15)</l>
+<l>segment_contours_xld (SmoothedContours, ContoursSplit, 'lines_circles', 5, 4, 2)</l>
+<l>fit_line_contour_xld (ContoursSplit, 'tukey', -1, 0, 5, 2, GlassEdgeRowArray, GlassEdgeColumnArray, RowEnd, ColEnd, Nr, Nc, Dist)</l>
+<l>*gen_cross_contour_xld (Cross4, RowBegin, ColBegin, 60, 1)</l>
+<l>return ()</l>
+</body>
+<docu id="glass_edge_detection">
+<parameters>
+<parameter id="GlassEdgeColumnArray"/>
+<parameter id="GlassEdgeRowArray"/>
+<parameter id="GlassRegion"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="generate_glass_edge_pointset">
+<interface>
+<io>
+<par name="GlassRegion" base_type="iconic" dimension="0"/>
+</io>
+<oc>
+<par name="GlassEdgeRowArrayStart" base_type="ctrl" dimension="0"/>
+<par name="GlassEdgeColumnArrayStart" base_type="ctrl" dimension="0"/>
+<par name="GlassEdgeRowArrayEnd" base_type="ctrl" dimension="0"/>
+<par name="GlassEdgeColumnArrayEnd" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>gen_contour_region_xld (GlassRegion, Contours, 'border')</l>
+<l>smooth_contours_xld (Contours, SmoothedContours, 151)</l>
+<l>segment_contours_xld (SmoothedContours, ContoursSplit, 'lines_circles', 5, 4, 2)</l>
+<l>fit_line_contour_xld (ContoursSplit, 'tukey', -1, 0, 5, 2, GlassEdgeRowArrayStart, GlassEdgeColumnArrayStart, GlassEdgeRowArrayEnd, GlassEdgeColumnArrayEnd, Nr, Nc, Dist)</l>
+<l>*gen_cross_contour_xld (Cross4, RowBegin, ColBegin, 60, 1)</l>
+<l>return ()</l>
+</body>
+<docu id="generate_glass_edge_pointset">
+<parameters>
+<parameter id="GlassEdgeColumnArrayEnd"/>
+<parameter id="GlassEdgeColumnArrayStart"/>
+<parameter id="GlassEdgeRowArrayEnd"/>
+<parameter id="GlassEdgeRowArrayStart"/>
+<parameter id="GlassRegion"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="darkfiled_defect_process_general_area">
+<interface>
+<io>
+<par name="DarkFieldBGRemoved" base_type="iconic" dimension="0"/>
+<par name="GlassInkArea" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="ImageReduced" base_type="iconic" dimension="0"/>
+<par name="Region" base_type="iconic" dimension="0"/>
+<par name="DefectConnectedRegions" base_type="iconic" dimension="0"/>
+</oo>
+<ic>
+<par name="ControlParamList" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="Ch2SmallKernelSize" base_type="ctrl" dimension="0"/>
+<par name="Ch2BigKernelSize" base_type="ctrl" dimension="0"/>
+<par name="Ch2LightDifferenceValueIA" base_type="ctrl" dimension="0"/>
+<par name="Ch2LightMinAreaIA" base_type="ctrl" dimension="0"/>
+<par name="color" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>param_dictionary(ControlParamList, 'Ch2SmallKernelSize', Ch2SmallKernelSize)</l>
+<l>param_dictionary(ControlParamList, 'Ch2BigKernelSize', Ch2BigKernelSize)</l>
+<c></c>
+<c>** 正常分辨率检测黑白瑕疵</c>
+<l>param_dictionary(ControlParamList, 'Ch2LightDifferenceValue', Ch2LightDifferenceValue)</l>
+<l>param_dictionary(ControlParamList, 'Ch2LightMinArea', Ch2LightMinArea)</l>
+<l>color:='light'</l>
+<c></c>
+<l>*reduce_domain (DarkFieldBGRemoved, GlassInkArea, ImageReduced)</l>
+<l>threshold (DarkFieldBGRemoved, Region, Ch2LightDifferenceValue, 255)</l>
+<l>fill_up (Region, Region)</l>
+<l>connection (Region, Region)</l>
+<c></c>
+<l>select_shape (Region, Region, 'area', 'and', Ch2LightMinArea, 99999999)</l>
+<l>return ()</l>
+</body>
+<docu id="darkfiled_defect_process_general_area">
+<parameters>
+<parameter id="Ch2BigKernelSize"/>
+<parameter id="Ch2LightDifferenceValueIA"/>
+<parameter id="Ch2LightMinAreaIA"/>
+<parameter id="Ch2SmallKernelSize"/>
+<parameter id="ControlParamList"/>
+<parameter id="DarkFieldBGRemoved"/>
+<parameter id="DefectConnectedRegions"/>
+<parameter id="GlassInkArea"/>
+<parameter id="ImageReduced"/>
+<parameter id="Region"/>
+<parameter id="color"/>
+</parameters>
+</docu>
+</procedure>
+<procedure name="defect_union">
+<interface>
+<io>
+<par name="DefectConnectedRegionsIA" base_type="iconic" dimension="0"/>
+<par name="DefectConnectedRegionsWA" base_type="iconic" dimension="0"/>
+</io>
+<oo>
+<par name="DefectConnectedRegions" base_type="iconic" dimension="0"/>
+</oo>
+</interface>
+<body>
+<l>union2 (DefectConnectedRegionsIA, DefectConnectedRegionsWA, DefectConnectedRegions)</l>
+<l>dilation_circle (DefectConnectedRegions, RegionDilation, 30)</l>
+<l>connection (RegionDilation, ConnectedRegions)</l>
+<l>intersection (ConnectedRegions, DefectConnectedRegions, DefectConnectedRegions)</l>
+<l>return ()</l>
+</body>
+<docu id="defect_union">
+<parameters>
+<parameter id="DefectConnectedRegions"/>
+<parameter id="DefectConnectedRegionsIA"/>
+<parameter id="DefectConnectedRegionsWA"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>
