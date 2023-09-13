@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="21.05.0.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*读取一张图片</c>
+<l>list_image_files('C:/Cutter/0825', 'default', [], ImageFiles)</l>
+<l>for j := 4 to |ImageFiles|-1 by 1   </l>
+<l>    read_image(Image, ImageFiles[j])</l>
+<c>    *选择感兴趣的区域</c>
+<l>    crop_part(Image,ImageROI, 945, 900, 800,50)</l>
+<l>    binary_threshold(ImageROI, Region1, 'max_separability', 'dark', UsedThreshold1)</l>
+<l>    connection(Region1, ConnectedRegions)</l>
+<l>    edges_sub_pix(ImageROI, Edges1, 'canny', 1, 20, 40)</l>
+<l>    select_contours_xld(Edges1, SelectedContours, 'contour_length', 600, 9999999, -0.5, 0.5)</l>
+<l>    count_obj(SelectedContours, NumberEdge1)</l>
+<l>    if (NumberEdge1&gt;1)</l>
+<l>        sn:=1</l>
+<l>        xld_rowloop:=1000000</l>
+<l>        for s:=1 to NumberEdge1 by 1</l>
+<l>           select_obj(SelectedContours, ObjectEdges1, s)</l>
+<l>           get_contour_xld(ObjectEdges1,Row4, Col2)</l>
+<l>           if (Row4&lt;xld_rowloop)</l>
+<l>               xld_rowloop:=Row4</l>
+<l>               select_obj(SelectedContours, ObjectEdgesFinal, s)</l>
+<l>           endif</l>
+<l>        endfor</l>
+<l>    else</l>
+<l>        select_obj(SelectedContours, ObjectEdgesFinal, 1)</l>
+<l>    endif</l>
+<l>*    select_obj(Edges1, ObjectSelected, 1)</l>
+<l>    get_contour_xld(ObjectEdgesFinal, Row2, Col)</l>
+<l>    tuple_min(Row2,Min)</l>
+<l>    Intmin:=int(Min)</l>
+<l>    tuple_min(Col,MinC)</l>
+<l>    IntminC:=int(MinC)</l>
+<l>    Horz:=100</l>
+<l>    Vert:=50</l>
+<l>    OK:=2</l>
+<l>    crop_part(ImageROI,ImageROI1, Intmin, IntminC-5, Horz,Vert)</l>
+<l>    edges_sub_pix(ImageROI1, Edges2, 'canny', 1, 20, 40)</l>
+<c>    </c>
+<l>    count_obj(Edges2, NumberEdges2)</l>
+<l>    if (NumberEdges2&gt;1)</l>
+<l>        sn:=1</l>
+<l>        xld_rowloop:=1000000</l>
+<l>        for s:=1 to NumberEdges2 by 1</l>
+<l>           select_obj(Edges2, ObjectEdges2, s)</l>
+<l>           get_contour_xld(ObjectEdges2,Row4, Col2)</l>
+<l>           if (Row4&lt;xld_rowloop)</l>
+<l>               xld_rowloop:=Row4</l>
+<l>               select_obj(Edges2, ObjectEdgesFinal2, s)</l>
+<l>           endif</l>
+<l>        endfor</l>
+<l>    else</l>
+<l>        select_obj(Edges2, ObjectEdgesFinal2, 1)</l>
+<l>    endif</l>
+<l>    get_contour_xld(ObjectEdgesFinal2, Row3, Col1)</l>
+<l>    tuple_min(Row3, Min1)</l>
+<l>    tuple_min(Col1, MinC1)</l>
+<l>    Intmin1:=int(Min1)</l>
+<l>    IntminC1:=int(MinC1)</l>
+<l>    Vert1:=32</l>
+<l>    crop_part(ImageROI,ImageROI2, Intmin+Intmin1-5, IntminC-5, Horz,Vert1)</l>
+<l>*    crop_part(Image,ImagePart, 910, 1300, 100,80)</l>
+<c>    *提取边缘</c>
+<l>    edges_sub_pix(ImageROI2, Edges, 'canny', 1, 20, 40)</l>
+<l>    smooth_contours_xld(Edges, SmoothedContours1, 5)</l>
+<l>    segment_contours_xld (SmoothedContours1, ContoursSplit, 'lines_circles', 51, 40, 20)</l>
+<l>    gen_polygons_xld(ContoursSplit, Polygons, 'ramer', 4)</l>
+<l>    get_lines_xld (Polygons, BeginRow, BeginCol, EndRow, EndCol, Length1, Phi1)</l>
+<l>    for b:=0 to |BeginCol| by 1</l>
+<l>        if ((int(BeginCol[b])==Horz-1) or (int(BeginCol[b])==Horz-2))</l>
+<l>            SOL1:=EndRow[b]</l>
+<l>            evid1:=EndCol[b]</l>
+<l>            break</l>
+<l>        endif</l>
+<l>    endfor</l>
+<l>    for e:=0 to |EndCol| by 1</l>
+<l>        if ((int(EndCol[e])==Horz-1) or (int(EndCol[e])==Horz-2))</l>
+<l>            SOL2:=BeginRow[e]</l>
+<l>            evid2:=BeginCol[e]</l>
+<l>            break</l>
+<l>        endif</l>
+<l>    endfor</l>
+<c>    *短弧在上是1</c>
+<l>   if ((SOL1&lt;SOL2) and evid1&lt;evid2)</l>
+<l>       OK:=1</l>
+<l>   endif</l>
+<l>   if ((SOL1&lt;SOL2) and evid1&gt;evid2)</l>
+<l>       OK:=0</l>
+<l>   endif</l>
+<l>   if ((SOL1&gt;SOL2) and evid1&lt;evid2)</l>
+<l>       OK:=0</l>
+<l>   endif</l>
+<l>   if ((SOL1&gt;SOL2) and evid1&gt;evid2)</l>
+<l>       OK:=1</l>
+<l>   endif</l>
+<l>endfor</l>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>
