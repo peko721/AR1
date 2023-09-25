@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="21.05.0.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*读取一张图片</c>
+<l>list_image_files('C:/Users/zhangw16/Downloads/POS/DEC1', 'default', [], ImageFiles)</l>
+<l>for j :=7 to |ImageFiles|-1 by 1   </l>
+<l>    read_image(Image, ImageFiles[j])</l>
+<c>    *选择感兴趣的区域</c>
+<l>    crop_part(Image,ImageROI, 890, 1200, 1595,1000)</l>
+<l>    *edges_sub_pix(ImageROI, Edges3, 'canny', 1, 20, 40)</l>
+<l>    threshold(ImageROI, Region, 250, 255)</l>
+<l>    reduce_domain(ImageROI, Region, ImageReduced)</l>
+<l>    crop_part(ImageReduced, ImagePart,  0, 150, 500,80)</l>
+<l>    threshold(ImagePart, Region2, 0, 255)</l>
+<l>    fill_up(Region2, RegionFillUp)</l>
+<l>    connection(RegionFillUp, ConnectedRegions)</l>
+<l>    select_shape_std(ConnectedRegions, SelectedRegions, 'max_area', 70)</l>
+<l>    get_image_size(ImagePart, Width, Height)</l>
+<l>    gen_image_proto(ImagePart, ImageCleared, 0)</l>
+<l>    paint_region(SelectedRegions, ImageCleared, ImageResult, 255, 'fill')</l>
+<l>    threshold_sub_pix(ImageResult, Border, 200)</l>
+<l>    select_contours_xld(Border, SelectedContours, 'contour_length', 300, 999900, -0.5, 0.5)</l>
+<l>    get_contour_xld(SelectedContours, Row2, Col)</l>
+<l>    tuple_min(Row2,Min)</l>
+<l>    Intmin:=int(Min)</l>
+<l>    tuple_min(Col,MinC)</l>
+<l>    IntminC:=int(MinC)</l>
+<l>    Horz:=300</l>
+<l>    Vert:=50</l>
+<l>    OK:=2</l>
+<l>    if (Intmin&gt;2 and IntminC&gt;2)</l>
+<l>        crop_part(ImageResult,ImageResultROI, Intmin-2, IntminC-2, Horz,Vert)</l>
+<l>    endif</l>
+<c>    </c>
+<l>    threshold_sub_pix(ImageResultROI, Border1, 200)</l>
+<l>    *edges_sub_pix(ImageResult, Edges4, 'canny', 1, 20, 40)</l>
+<l>    *select_obj(Edges4, ObjectSelected, 1)</l>
+<l>    smooth_contours_xld(Border1, SmoothedContours1, 19)</l>
+<l>    segment_contours_xld (SmoothedContours1, ContoursSplit, 'lines_circles', 51, 40, 20)</l>
+<l>    gen_polygons_xld(ContoursSplit, Polygons, 'ramer', 8)</l>
+<l>    get_lines_xld (Polygons, BeginRow, BeginCol, EndRow, EndCol, Length1, Phi1)</l>
+<l>    Horz:=600</l>
+<l>    Vert:=80</l>
+<l>    tuple_max(BeginCol, MaxC)</l>
+<l>    for b:=0 to |BeginCol|-1 by 1</l>
+<l>        if (BeginCol[b]==MaxC)</l>
+<l>            SOL1:=EndRow[b]</l>
+<l>            evid1:=EndCol[b]</l>
+<l>            break</l>
+<l>        endif</l>
+<l>    endfor</l>
+<l>    for b:=0 to |BeginRow|-1 by 1</l>
+<l>        if (BeginRow[b]==SOL1)</l>
+<l>            h1:=abs(EndRow[b]-SOL1)</l>
+<l>            break</l>
+<l>        endif</l>
+<l>    endfor</l>
+<c>    </c>
+<l>    tuple_max(EndCol, MaxR)</l>
+<l>    for e:=0 to |EndCol|-1 by 1</l>
+<l>        if (EndCol[e]==MaxR)</l>
+<l>            SOL2:=BeginRow[e]</l>
+<l>            evid2:=BeginCol[e]</l>
+<l>            break</l>
+<l>        endif</l>
+<l>    endfor</l>
+<l>    for e:=0 to |EndRow|-1 by 1</l>
+<l>        if (EndRow[e]==SOL2)</l>
+<l>            h2:=abs(BeginRow[e]-SOL2)</l>
+<l>            break</l>
+<l>        endif</l>
+<l>    endfor</l>
+<c>    *短弧在上是1</c>
+<l>   if ((SOL1&lt;SOL2) and evid1&lt;evid2)</l>
+<l>       OK:=1</l>
+<l>   endif</l>
+<l>   if ((SOL1&lt;SOL2) and evid1&gt;evid2)</l>
+<l>       OK:=0</l>
+<l>       if (h1&gt;h2)</l>
+<l>           OK:=1</l>
+<l>       endif</l>
+<l>   endif</l>
+<l>   if ((SOL1&gt;SOL2) and evid1&lt;evid2)</l>
+<l>       OK:=0</l>
+<l>       if (h1&gt;h2)</l>
+<l>           OK:=1</l>
+<l>       endif</l>
+<l>   endif</l>
+<l>   if ((SOL1&gt;SOL2) and evid1&gt;evid2)</l>
+<l>       OK:=1</l>
+<l>   endif</l>
+<l>endfor</l>
+<c>    </c>
+<c>    </c>
+<c>    </c>
+<c>    </c>
+<c> </c>
+<c></c>
+<c> </c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>
