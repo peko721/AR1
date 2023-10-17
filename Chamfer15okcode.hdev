@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="21.05.0.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*读取一张图片</c>
+<l>list_image_files('C:/Users/zhangw16/Downloads/POS/DEC0', 'default', [], ImageFiles)</l>
+<l>for j :=0 to |ImageFiles|-1 by 1   </l>
+<l>    read_image(Image, ImageFiles[j])</l>
+<c>    *选择感兴趣的区域</c>
+<l>    crop_part(Image,ImageROI, 700, 1200, 1595,1000)</l>
+<l>    *edges_sub_pix(ImageROI, Edges3, 'canny', 1, 20, 40)</l>
+<l>    threshold(ImageROI, Region, 200, 255)</l>
+<l>    reduce_domain(ImageROI, Region, ImageReduced)</l>
+<l>    threshold_sub_pix(ImageReduced, Border2, 200)</l>
+<l>    crop_part(ImageReduced, ImagePart,  0, 400, 1000,220)</l>
+<l>    threshold(ImagePart, Region2, 0, 255)</l>
+<l>    fill_up(Region2, RegionFillUp)</l>
+<l>    connection(RegionFillUp, ConnectedRegions)</l>
+<l>    *select_shape(ConnectedRegions, SelectedRegions, 'area', 'and', 150, 20000)</l>
+<l>    select_shape_std(ConnectedRegions, SelectedRegions, 'max_area', 70)</l>
+<l>    get_image_size(ImagePart, Width, Height)</l>
+<l>    gen_image_proto(ImagePart, ImageCleared, 0)</l>
+<l>    paint_region(SelectedRegions, ImageCleared, ImageResult, 255, 'fill')</l>
+<l>    threshold_sub_pix(ImageResult, Border, 200)</l>
+<l>    select_contours_xld(Border, SelectedContours, 'contour_length', 100, 999900, -0.5, 0.5)</l>
+<l>    get_contour_xld(SelectedContours, Row2, Col)</l>
+<l>    tuple_min(Row2,Min)</l>
+<l>    Intmin:=int(Min)</l>
+<l>    tuple_min(Col,MinC)</l>
+<l>    tuple_find(Col, MinC, Indices)</l>
+<l>    loc:=Row2[Indices]</l>
+<l>    tuple_min(loc, Min1)</l>
+<l>    IntminC:=int(MinC)</l>
+<c></c>
+<l>    Horz:=100</l>
+<l>    Vert:=65</l>
+<l>    OK:=2</l>
+<l>    if ( Min1&gt;20 and MinC&gt;20)</l>
+<l>        crop_part(ImageReduced,ImageResultROI,  Min1-20, 400+MinC-20, Horz,Vert)</l>
+<l>    endif</l>
+<l>    fill_up(ImageResultROI, ImageResultROIFill)</l>
+<l>    connection(ImageResultROIFill, ConnectedRegionsROI)</l>
+<l>    select_shape_std(ConnectedRegionsROI, SelectedRegions1, 'max_area', 70)</l>
+<l>    get_image_size(ImageResultROI, Width, Height)</l>
+<l>    gen_image_proto(ImageResultROI, ImageCleared, 0)</l>
+<l>    paint_region(SelectedRegions1, ImageCleared, ImageResult, 255, 'fill')</l>
+<l>    crop_part(ImageResult, ImagePart1, 0, 0, 50, 60)</l>
+<c>    </c>
+<l>    threshold(ImagePart1, Region1, 128, 255)</l>
+<l>    *get_region_points(Region1, Rows, Columns)</l>
+<l>    get_region_contour(Region1, Rows, Columns)</l>
+<c>    *先获得最小的列值</c>
+<l>    tuple_min(Columns, MinCol)</l>
+<c>    *找到最小的列对应的行的最大和最小</c>
+<l>    tuple_find(Columns, MinCol, IndexCol)</l>
+<l>    Rowvalue:=Rows[IndexCol]</l>
+<l>    tuple_min(Rowvalue, Minindex)</l>
+<l>    tuple_max(Rowvalue,Maxindex)</l>
+<l>    contourlengthD:=0</l>
+<l>    contourlength:=0</l>
+<l>    continney:=0</l>
+<l>    error:=0</l>
+<c>    </c>
+<l>    tuple_find(Columns,MinCol,Indices1)</l>
+<l>    tuple_find(Rows[Indices1],Minindex,Indices2)</l>
+<l>    tuple_find(Rows[Indices1],Maxindex,Indices3)</l>
+<l>    Rowindexmax:=Indices1[Indices2[0]]</l>
+<l>    Rowindexmin:=Indices1[Indices3[0]]</l>
+<l>    tuple_length(Indices2,Length)</l>
+<l>    tuple_length(Rows, LengthR)</l>
+<l>    tempointR:=Maxindex</l>
+<l>    tempointC:=MinCol</l>
+<c>    </c>
+<l>    if(Rowindexmin&gt;5 and LengthR-Rowindexmax&gt;5)</l>
+<l>        for Index:=Rowindexmin-1 to 4 by -1</l>
+<l>            tuple_select_range(Rows, Index-4, Index, Selected)</l>
+<l>            tuple_deviation(Selected, Deviation)</l>
+<l>            if (Deviation&lt;0.5)</l>
+<l>            *if (Rows[Index]==Rows[Index-1] and Rows[Index]==Rows[Index-2] and Rows[Index]==Rows[Index-3])</l>
+<l>                break</l>
+<l>            else</l>
+<l>                contourlengthD:=contourlengthD+abs(Rows[Index]-tempointR)+abs(Columns[Index]-tempointC)</l>
+<l>                tempointR:=Rows[Index]</l>
+<l>                tempointC:=Columns[Index]</l>
+<l>            endif</l>
+<c>            </c>
+<l>        endfor</l>
+<l>        tempointR:=Minindex</l>
+<l>        tempointC:=MinCol</l>
+<l>        for Index:=Rowindexmax+1 to LengthR-5 by 1</l>
+<l>            tuple_select_range(Rows, Index, Index+4,Selected)</l>
+<l>            tuple_deviation(Selected, Deviation)</l>
+<l>            if (Deviation&lt;0.5)</l>
+<l>            *if (Rows[Index]==Rows[Index+1] and Rows[Index]==Rows[Index+2] and Rows[Index]==Rows[Index+3])</l>
+<l>                break</l>
+<l>            else</l>
+<l>               contourlength:=contourlength+abs(Rows[Index]-tempointR)+abs(Columns[Index]-tempointC)</l>
+<l>               tempointR:=Rows[Index]</l>
+<l>               tempointC:=Columns[Index]</l>
+<l>            endif</l>
+<c>            </c>
+<l>        endfor</l>
+<l>    else</l>
+<l>        if (Rowindexmin&lt;5)</l>
+<l>            error:=1</l>
+<l>        endif</l>
+<l>        if (LengthR-Rowindexmax&lt;5)</l>
+<l>            error:=1</l>
+<l>        endif</l>
+<l>    endif</l>
+<c>  </c>
+<l>endfor</l>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>
