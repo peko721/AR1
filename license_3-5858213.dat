@@ -1,0 +1,8 @@
+##################################################################################
+# Corning Incorporated  (Id: CM:3-5858213)                                       #
+# HALCON 20.11 Steady RTL (Bundle)                                               #
+##################################################################################
+LICENSE MVTec_HALCON 20.11 MODULES=fc123bdom ID=CM:3-5858213 SESSIONS=1 \
+        SIGNATURE="70B8 B03D 0BCE 08A2 38ED 4BDE CC81 5D12 36CA 3BE6 2AE0 \
+        1180 B0DF F88F 8D84 EFFA 2500 4293 41FC 5EF6 F5BC 296E EA46 2593 4676 \
+        14E4 0AA2 00E0 0542 E369 CEAC A60B"

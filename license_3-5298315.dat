@@ -1,0 +1,12 @@
+##################################################################################
+# Corning Automotive Glass Solutions (Hefei) Co., Ltd.  (Id: CM:3-5298315)       #
+# HALCON 20.11 Steady SDK, Free U                                                #
+##################################################################################
+LICENSE MVTec_HDevelop 20.11 MODULES=fc123bdom ID=CM:3-5298315 SESSIONS=1 \
+        SIGNATURE="44E5 4E4B EB4E EAA9 5275 3381 D04D C0F4 72D8 4DF0 96FE \
+        73F9 E314 E6F3 FFDE EF20 BCF1 9946 4DFC 4C3B 9CFC ACE4 E392 ADCA B7E8 \
+        9C9A 57D6 5C94 6516 7464 A902 7205"
+LICENSE MVTec_HALCON 20.11 MODULES=fc123bdom ID=CM:3-5298315 SESSIONS=1 \
+        SIGNATURE="E7C3 9208 8CC1 B505 8FB2 26FE 7F79 0BE3 6F79 19AB AA9D \
+        7267 8233 6964 A6A1 E9A3 CF38 B0E3 C5C2 6199 9716 24A6 84C2 9384 123E \
+        142C 0DE1 92B6 BA3C 6F18 06E7 8E0E"
