@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="21.05.0.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image(Image, 'C:/Users/zhangw16/Downloads/hu/MIB3.bmp')</l>
+<l>read_tuple('C:/Users/zhangw16/Desktop/PiexlX.tup',PiexlX)</l>
+<l>read_tuple('C:/Users/zhangw16/Desktop/PiexlY.tup',PiexlY)</l>
+<l>A_x :=2219</l>
+<l>A_y :=2608</l>
+<c>* 计算点A到其他所有点的距离</c>
+<c></c>
+<c>* 计算点A到其他所有点的x和y方向上的距离</c>
+<l>tuple_sub(PiexlX, A_x, DiffX)</l>
+<l>tuple_sub(PiexlY, A_y, DiffY)</l>
+<l>tuple_mult(DiffX, DiffX, ProdX)</l>
+<l>tuple_mult(DiffY, DiffY, ProdY)</l>
+<l>tuple_add(ProdX, ProdY, SumXY)</l>
+<l>tuple_sqrt(SumXY, SqrtXY)</l>
+<c>* 找到最小的距离</c>
+<l>min_distance := min(SqrtXY)</l>
+<c>* 找到最小距离对应的索引，即最近的点</c>
+<l>tuple_find(SqrtXY, min_distance, Index)</l>
+<c></c>
+<l>tuple_div(Index,20,row)</l>
+<l>tuple_mod(Index, 20, colunm)</l>
+<c></c>
+<l>WorlX := []</l>
+<l>WorlY := []</l>
+<c>* 循环生成数据</c>
+<l>for i := 0 to 19 by 1</l>
+<l>    tuple_gen_const(20, i*20,NewtupleX)</l>
+<l>    tuple_gen_sequence(0,380,20,Sequence)</l>
+<l>    tuple_concat(WorlX, NewtupleX, WorlX)</l>
+<l>    tuple_concat(WorlY, Sequence, WorlY)</l>
+<l>endfor</l>
+<c></c>
+<l>valueX:=PiexlX[Index]</l>
+<l>valueY:=PiexlY[Index]</l>
+<l>woldX:=WorlX[Index]</l>
+<l>woldY:=WorlY[Index]</l>
+<l>if(A_y&gt;=valueY)</l>
+<l>    if(A_x&gt;=valueX)</l>
+<c>       *点在右下</c>
+<l>       valuerightY:=PiexlY[Index+1]</l>
+<l>       valuedownX:=PiexlX[Index+20]</l>
+<l>        tuple_abs(20*(A_x-valueX)/(valuedownX-valueX),ActaulX)</l>
+<l>        tuple_abs(20*(A_y-valueY)/(valuerightY-valueY),ActaulY)</l>
+<c>        *ActaulY=20*abs((point_A[1]-value[1])/(valueright[1]-value[1]))</c>
+<l>        FX:=woldX+ActaulX</l>
+<l>        FY:=woldY+ActaulY</l>
+<l>    else  </l>
+<c>         *点在右上</c>
+<l>        valuerightY:=PiexlY[Index+1]</l>
+<l>        valueupX:=PiexlX[Index-20]</l>
+<l>        tuple_abs(20*(A_x-valueX)/(valueupX-valueX),ActaulX)</l>
+<l>        tuple_abs(20*(A_y-valueY)/(valuerightY-valueY),ActaulY)</l>
+<c>        *ActaulY=20*abs((point_A[1]-value[1])/(valueright[1]-value[1]))</c>
+<l>        FX:=woldX-ActaulX</l>
+<l>        FY:=woldY+ActaulY</l>
+<l>    endif</l>
+<l>else</l>
+<l>    if(A_x&gt;=valueX)</l>
+<c>        *点在左下</c>
+<l>        valueleftY:=PiexlY[Index-1]</l>
+<l>        valuedownX:=PiexlX[Index+20]</l>
+<l>        tuple_abs(20*(A_x-valueX)/(valuedownX-valueX),ActaulX)</l>
+<l>        tuple_abs(20*(A_y-valueY)/(valueleftY-valueY),ActaulY)</l>
+<c>        *ActaulY=20*abs((point_A[1]-value[1])/(valueright[1]-value[1]))</c>
+<l>        FX:=woldX+ActaulX</l>
+<l>        FY:=woldY-ActaulY</l>
+<l>    else  </l>
+<c>        *点在左上</c>
+<l>        valueleftY:=PiexlY[Index-1]</l>
+<l>        valueupX:=PiexlX[Index-20]</l>
+<l>        tuple_abs(20*(A_x-valueX)/(valueupX-valueX),ActaulX)</l>
+<l>        tuple_abs(20*(A_y-valueY)/(valueleftY-valueY),ActaulY)</l>
+<c>        *ActaulY=20*abs((point_A[1]-value[1])/(valueright[1]-value[1]))</c>
+<l>        FX:=woldX-ActaulX</l>
+<l>        FY:=woldY-ActaulY</l>
+<l>    endif</l>
+<l>endif</l>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>
