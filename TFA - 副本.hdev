@@ -3,7 +3,50 @@
 <procedure name="main">
 <interface/>
 <body>
-<l>read_image(Image, 'C:/Users/zhangw16/Downloads/hu/MIB3.bmp')</l>
+<c>* 打开文件</c>
+<l>open_file('C:/Users/zhangw16/Desktop/ntxtX.txt', 'input', fileID)</l>
+<c>* 初始化一个空元组</c>
+<l>data := []</l>
+<l>fread_string(fileID, OutString, IsEOF)</l>
+<l>tuple_number(OutString, Number)</l>
+<l>data := [data,Number]</l>
+<c>* 循环读取数据</c>
+<l>while (not(IsEOF))</l>
+<l>    fread_string(fileID, OutString, IsEOF)</l>
+<l>    tuple_number(OutString, Number)</l>
+<l>    data := [data,Number]</l>
+<l>    *tuple_concat(data,Number, Concat)</l>
+<l>endwhile</l>
+<l>tuple_select_range(data, 0, |data|-2, Selected1)</l>
+<l>write_tuple(Selected1, 'C:/Users/zhangw16/Desktop/PiexlX.tup')</l>
+<c></c>
+<l>open_file('C:/Users/zhangw16/Desktop/ntxtY.txt', 'input', fileID)</l>
+<c>* 初始化一个空元组</c>
+<l>data := []</l>
+<l>fread_string(fileID, OutString, IsEOF)</l>
+<l>tuple_number(OutString, Number)</l>
+<l>data := [data,Number]</l>
+<c>* 循环读取数据</c>
+<l>while (not(IsEOF))</l>
+<l>    fread_string(fileID, OutString, IsEOF)</l>
+<l>    tuple_number(OutString, Number)</l>
+<l>    data := [data,Number]</l>
+<l>    *tuple_concat(data,Number, Concat)</l>
+<l>endwhile</l>
+<l>tuple_select_range(data, 0, |data|-2, Selected)</l>
+<l>write_tuple(Selected, 'C:/Users/zhangw16/Desktop/PiexlY.tup')</l>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<l>*read_image(Image, 'C:/Users/zhangw16/Downloads/hu/MIB3.bmp')</l>
 <l>read_tuple('C:/Users/zhangw16/Desktop/PiexlX.tup',PiexlX)</l>
 <l>read_tuple('C:/Users/zhangw16/Desktop/PiexlY.tup',PiexlY)</l>
 <l>A_x :=2219</l>
@@ -22,15 +65,15 @@
 <c>* 找到最小距离对应的索引，即最近的点</c>
 <l>tuple_find(SqrtXY, min_distance, Index)</l>
 <c></c>
-<l>tuple_div(Index,20,row)</l>
-<l>tuple_mod(Index, 20, colunm)</l>
+<l>tuple_div(Index,33,row)</l>
+<l>tuple_mod(Index, 33, colunm)</l>
 <c></c>
 <l>WorlX := []</l>
 <l>WorlY := []</l>
 <c>* 循环生成数据</c>
-<l>for i := 0 to 19 by 1</l>
-<l>    tuple_gen_const(20, i*20,NewtupleX)</l>
-<l>    tuple_gen_sequence(0,380,20,Sequence)</l>
+<l>for i := 0 to 20 by 1</l>
+<l>    tuple_gen_const(33, i*20,NewtupleX)</l>
+<l>    tuple_gen_sequence(0,640,20,Sequence)</l>
 <l>    tuple_concat(WorlX, NewtupleX, WorlX)</l>
 <l>    tuple_concat(WorlY, Sequence, WorlY)</l>
 <l>endfor</l>
@@ -43,7 +86,7 @@
 <l>    if(A_x&gt;=valueX)</l>
 <c>       *点在右下</c>
 <l>       valuerightY:=PiexlY[Index+1]</l>
-<l>       valuedownX:=PiexlX[Index+20]</l>
+<l>       valuedownX:=PiexlX[Index+32]</l>
 <l>        tuple_abs(20*(A_x-valueX)/(valuedownX-valueX),ActaulX)</l>
 <l>        tuple_abs(20*(A_y-valueY)/(valuerightY-valueY),ActaulY)</l>
 <c>        *ActaulY=20*abs((point_A[1]-value[1])/(valueright[1]-value[1]))</c>
@@ -52,7 +95,7 @@
 <l>    else  </l>
 <c>         *点在右上</c>
 <l>        valuerightY:=PiexlY[Index+1]</l>
-<l>        valueupX:=PiexlX[Index-20]</l>
+<l>        valueupX:=PiexlX[Index-32]</l>
 <l>        tuple_abs(20*(A_x-valueX)/(valueupX-valueX),ActaulX)</l>
 <l>        tuple_abs(20*(A_y-valueY)/(valuerightY-valueY),ActaulY)</l>
 <c>        *ActaulY=20*abs((point_A[1]-value[1])/(valueright[1]-value[1]))</c>
@@ -63,7 +106,7 @@
 <l>    if(A_x&gt;=valueX)</l>
 <c>        *点在左下</c>
 <l>        valueleftY:=PiexlY[Index-1]</l>
-<l>        valuedownX:=PiexlX[Index+20]</l>
+<l>        valuedownX:=PiexlX[Index+32]</l>
 <l>        tuple_abs(20*(A_x-valueX)/(valuedownX-valueX),ActaulX)</l>
 <l>        tuple_abs(20*(A_y-valueY)/(valueleftY-valueY),ActaulY)</l>
 <c>        *ActaulY=20*abs((point_A[1]-value[1])/(valueright[1]-value[1]))</c>
@@ -72,7 +115,7 @@
 <l>    else  </l>
 <c>        *点在左上</c>
 <l>        valueleftY:=PiexlY[Index-1]</l>
-<l>        valueupX:=PiexlX[Index-20]</l>
+<l>        valueupX:=PiexlX[Index-32]</l>
 <l>        tuple_abs(20*(A_x-valueX)/(valueupX-valueX),ActaulX)</l>
 <l>        tuple_abs(20*(A_y-valueY)/(valueleftY-valueY),ActaulY)</l>
 <c>        *ActaulY=20*abs((point_A[1]-value[1])/(valueright[1]-value[1]))</c>
